@@ -96,7 +96,7 @@ let dirty = false;
 let bridge = null;
 
 export function draftStats() { return { drafts: drafts.length, recent: [...drafts].sort((a,b)=>b.updatedAt-a.updatedAt).slice(0,3) }; }
-export function newDraft(locale='ar') { if(dirty) saveDraft(); working=blankGame(locale); selectedQuestion=working.questions[0].id; dirty=false; safeWrite(RECOVERY_KEY,working); }
+export function newDraft(locale='ar') { if(dirty && !saveDraft()) return false; working=blankGame(locale); selectedQuestion=working.questions[0].id; dirty=false; safeWrite(RECOVERY_KEY,working); return true; }
 function markEdited() { working.updatedAt=Date.now(); dirty=true; safeWrite(RECOVERY_KEY,working); }
 function saveDraft() { if (!working.title.trim()) return false; const item=cleanGame(working); item.updatedAt=Date.now(); const next=[item,...drafts.filter(d=>d.id!==item.id)]; if (!safeWrite(STORAGE_KEY,next)) return false; drafts=next; working=clone(item); dirty=false; safeWrite(RECOVERY_KEY,working); return true; }
 function activeQuestion() { return working.questions.find(q=>q.id===selectedQuestion) || working.questions[0]; }
@@ -197,14 +197,14 @@ function applyLibraryFilter() { const query=libraryQuery.trim().toLocaleLowerCas
 function executeAction(action, element, locale) {
   const q=activeQuestion(), index=working.questions.findIndex(item=>item.id===q?.id);
   switch(action) {
-    case 'new-game': newDraft(locale);bridge.refresh();return;
-    case 'new-game-go':newDraft(locale);bridge.go('studio');return;
+    case 'new-game': if(!newDraft(locale)){bridge.toast(msg(locale,'saveError'));return;}bridge.refresh();return;
+    case 'new-game-go':if(!newDraft(locale)){bridge.toast(msg(locale,'saveError'));return;}bridge.go('studio');return;
     case 'save-game':{const saved=saveDraft();bridge.refresh();bridge.toast(msg(locale,saved?'savedToast':'saveError'));return;}
     case 'export-game':downloadGame(working);bridge.toast(msg(locale,'exported'));return;
     case 'open-draft':selectAndGo(element.dataset.id);return;
     case 'export-draft':{const item=drafts.find(g=>g.id===element.dataset.id);if(item)downloadGame(item);return;}
     case 'ask-delete':modal={type:'delete',id:element.dataset.id};bridge.refresh();return;
-    case 'confirm-delete':{const next=drafts.filter(g=>g.id!==modal?.id);if(!safeWrite(STORAGE_KEY,next)){bridge.toast(msg(locale,'saveError'));return;}drafts=next;modal=null;bridge.refresh();bridge.toast(msg(locale,'deleted'));return;}
+    case 'confirm-delete':{const deletedId=modal?.id;const next=drafts.filter(g=>g.id!==deletedId);if(!safeWrite(STORAGE_KEY,next)){bridge.toast(msg(locale,'saveError'));return;}drafts=next;if(working.id===deletedId){working=blankGame(locale);selectedQuestion=working.questions[0].id;dirty=false;safeWrite(RECOVERY_KEY,working);}modal=null;bridge.refresh();bridge.toast(msg(locale,'deleted'));return;}
     case 'open-import':modal={type:'import'};bridge.refresh();return;
     case 'do-import':{
       if(working.questions.length>=MAX_QUESTIONS){bridge.toast(msg(locale,'help'));return;}
