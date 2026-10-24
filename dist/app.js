@@ -1,3 +1,5 @@
+import { studioPage, libraryPage, draftStats, recentDraftsPage, editorOverlay, registerEditorEvents, newDraft } from './editor.js';
+
 const BRAND = {
   deepTeal: '#173A43',
   turquoise: '#23AAA1',
@@ -45,11 +47,11 @@ const dictionary = {
   ar: {
     appName: 'استوديو الألعاب', subBrand: 'ARABIC LIGHT ACADEMY', appCaption: 'منصة الألعاب التعليمية',
     primary: 'مساحة العمل', manage: 'الإدارة والمتابعة', dashboard: 'لوحة التحكم', studio: 'إنشاء الألعاب', library: 'مكتبة الألعاب', patterns: 'أنماط الألعاب', students: 'الطلاب', groups: 'المجموعات', reports: 'التقارير', live: 'التحديات المباشرة', settings: 'الإعدادات',
-    beta: 'نسخة أولية', teacher: 'مساحة المعلم', demo: 'عرض المرحلة الأولى', search: 'ابحث عن نمط لعبة أو قسم...', language: 'English', notifications: 'الإشعارات', noNotifications: 'ليس لديك إشعارات جديدة', close: 'إغلاق',
+    beta: 'نسخة أولية', teacher: 'مساحة المعلم', demo: 'عرض المرحلة الثانية', search: 'ابحث عن نمط لعبة أو قسم...', language: 'English', notifications: 'الإشعارات', noNotifications: 'ليس لديك إشعارات جديدة', close: 'إغلاق',
     welcome: 'صباح الإبداع، يا معلّم!', welcomeText: 'كل رحلة تعلم مؤثرة تبدأ بفكرة بسيطة.',
     heroEyebrow: 'مساحة عربية لايت التفاعلية', heroTitleA: 'حوّل دروسك إلى', heroTitleB: 'لحظات تعلّم لا تُنسى', heroText: 'مكان واحد لتصميم الألعاب التعليمية، وتنظيمها، ومشاركة التحديات مع طلابك. نبدأ اليوم بأساس متين لتجربة أكثر متعة غدًا.', createGame: 'أنشئ أول لعبة', explorePatterns: 'استكشف الأنماط',
     statsGames: 'ألعابي', statsPublished: 'الألعاب المنشورة', statsStudents: 'الطلاب', statsGroups: 'المجموعات', zeroCaption: 'لم تُضف بيانات بعد',
-    recentTitle: 'أحدث ألعابك', recentCaption: 'ستظهر الألعاب التي تنشئها هنا', emptyGames: 'مساحة واسعة لأفكارك!', emptyGamesText: 'لم تنشئ أي لعبة حتى الآن. سنضيف محرر الألعاب في المرحلة التالية لتبدأ رحلتك مع طلابك.', startCreating: 'استكشف استوديو الإنشاء',
+    recentTitle: 'أحدث ألعابك', recentCaption: 'تظهر مسوداتك المحفوظة هنا', emptyGames: 'مساحة واسعة لأفكارك!', emptyGamesText: 'لم تحفظ أي لعبة بعد. افتح المحرر، أضف الأسئلة، ثم احفظ مسودتك على هذا الجهاز.', startCreating: 'ابدأ إنشاء لعبة', localDrafts: 'مسودات محلية',
     startTitle: 'خطوات البداية', startCaption: 'مسارك إلى أول لعبة تعليمية', stepOne: 'تجهيز مساحة العمل والهوية', stepTwo: 'إضافة أسئلة الدرس', stepThree: 'اختيار طريقة اللعب', stepFour: 'المعاينة والمشاركة', done: 'اكتمل', upcoming: 'قادم',
     patternsTitle: 'أنشطة تجعل التعلّم أمتع', patternsCaption: 'تسعة أنماط سنبنيها خطوة بخطوة داخل الاستوديو', viewAll: 'عرض كل الأنماط',
     tipLabel: 'فكرة تربوية', tipText: 'ابدأ بهدف تعليمي واحد في كل لعبة، واجعل التغذية الراجعة قصيرة ومشجعة؛ فالجودة تبدأ من وضوح المهمة.',
@@ -79,11 +81,11 @@ const dictionary = {
   en: {
     appName: 'Games Studio', subBrand: 'ARABIC LIGHT ACADEMY', appCaption: 'Educational games platform',
     primary: 'Workspace', manage: 'Manage & track', dashboard: 'Dashboard', studio: 'Game Creator', library: 'Games Library', patterns: 'Game Patterns', students: 'Students', groups: 'Groups', reports: 'Reports', live: 'Live Challenges', settings: 'Settings',
-    beta: 'Early preview', teacher: 'Teacher workspace', demo: 'Phase one preview', search: 'Find a game pattern or section...', language: 'العربية', notifications: 'Notifications', noNotifications: 'You have no new notifications', close: 'Close',
+    beta: 'Early preview', teacher: 'Teacher workspace', demo: 'Phase two preview', search: 'Find a game pattern or section...', language: 'العربية', notifications: 'Notifications', noNotifications: 'You have no new notifications', close: 'Close',
     welcome: 'A bright day for teaching!', welcomeText: 'Every meaningful learning journey starts with a simple idea.',
     heroEyebrow: 'Arabic Light interactive space', heroTitleA: 'Turn your lessons into', heroTitleB: 'learning moments that last', heroText: 'One home to design educational games, organize them and share challenges with learners. We are building the right foundation for a more joyful experience.', createGame: 'Create your first game', explorePatterns: 'Explore patterns',
     statsGames: 'My games', statsPublished: 'Published games', statsStudents: 'Students', statsGroups: 'Groups', zeroCaption: 'No data added yet',
-    recentTitle: 'Your latest games', recentCaption: 'Games you create will appear here', emptyGames: 'Room for your best ideas!', emptyGamesText: 'There are no games yet. The game editor arrives in phase two so you can start creating for learners.', startCreating: 'Explore the creator',
+    recentTitle: 'Your latest games', recentCaption: 'Your saved drafts appear here', emptyGames: 'Room for your best ideas!', emptyGamesText: 'No games saved yet. Open the editor, add questions and save a draft on this device.', startCreating: 'Create a game', localDrafts: 'Local drafts',
     startTitle: 'Getting started', startCaption: 'Your path to the first learning game', stepOne: 'Workspace and branding', stepTwo: 'Add lesson questions', stepThree: 'Choose a game mode', stepFour: 'Preview and share', done: 'Completed', upcoming: 'Upcoming',
     patternsTitle: 'Activities that spark learning', patternsCaption: 'Nine game mechanics we will build step by step', viewAll: 'View all patterns',
     tipLabel: 'Teaching tip', tipText: 'Start with one learning objective per game. Keep feedback short and encouraging; clarity makes the difference.',
@@ -164,8 +166,8 @@ function sidebar() {
     <div class="nav-group"><p class="nav-label">${t('primary')}</p>${navGroup('primary')}</div>
     <div class="nav-group"><p class="nav-label">${t('manage')}</p>${navGroup('manage')}</div>
     <div class="sidebar-spacer"></div>
-    <div class="sidebar-help"><span class="sidebar-help-icon">${icon('sparkles', 19)}</span><strong>${t('foundation')}</strong><p>${t('foundationText')}</p><span class="mini-progress"><i></i></span><small>01 / 08</small></div>
-    <div class="sidebar-footer"><span class="online-dot"></span><span>${t('beta')}</span><span class="footer-version">v0.1</span></div>
+    <div class="sidebar-help"><span class="sidebar-help-icon">${icon('sparkles', 19)}</span><strong>${t('foundation')}</strong><p>${t('foundationText')}</p><span class="mini-progress"><i style="width:25%"></i></span><small>02 / 08</small></div>
+    <div class="sidebar-footer"><span class="online-dot"></span><span>${t('beta')}</span><span class="footer-version">v0.2</span></div>
   </aside>`;
 }
 
@@ -195,13 +197,14 @@ function hero() {
 }
 
 function stats() {
+  const draftCount = draftStats().drafts;
   const items = [
     { key: 'statsGames', icon: 'gamepad', color: 'turquoise' },
     { key: 'statsPublished', icon: 'trophy', color: 'gold' },
     { key: 'statsStudents', icon: 'users', color: 'blue' },
     { key: 'statsGroups', icon: 'layers', color: 'purple' },
   ];
-  return `<div class="stats-grid">${items.map(item => `<article class="stat-card"><span class="stat-icon ${item.color}">${icon(item.icon, 22)}</span><span class="stat-label">${t(item.key)}</span><div class="stat-bottom"><strong>0</strong><span>${t('zeroCaption')}</span></div></article>`).join('')}</div>`;
+  return `<div class="stats-grid">${items.map(item => `<article class="stat-card"><span class="stat-icon ${item.color}">${icon(item.icon, 22)}</span><span class="stat-label">${t(item.key)}</span><div class="stat-bottom"><strong>${item.key === 'statsGames' ? draftCount : 0}</strong><span>${item.key === 'statsGames' && draftCount ? t('localDrafts') : t('zeroCaption')}</span></div></article>`).join('')}</div>`;
 }
 
 function patternCards(max = 9) {
@@ -212,12 +215,17 @@ function dashboard() {
   return `<div class="page-heading"><div><p class="kicker">${t('appCaption')}</p><h1>${t('welcome')}</h1><p>${t('welcomeText')}</p></div><span class="page-date">${icon('sparkles', 15)} ${t('demo')}</span></div>
   ${hero()}${stats()}
   <div class="dashboard-columns"><section class="panel recent-panel"><div class="panel-heading"><div><h3>${t('recentTitle')}</h3><p>${t('recentCaption')}</p></div><button class="text-link" type="button" data-nav="library">${t('library')} ${icon('arrow', 16)}</button></div>
-    <div class="empty-games"><div class="empty-illustration"><div class="empty-card-back"></div><div class="empty-card-front">${icon('gamepad', 37)}<span class="empty-plus">+</span></div><span class="empty-star">✦</span></div><h4>${t('emptyGames')}</h4><p>${t('emptyGamesText')}</p><button class="button button-primary" type="button" data-nav="studio">${t('startCreating')} ${icon('arrow', 17)}</button></div>
-  </section><section class="panel steps-panel"><div class="panel-heading"><div><h3>${t('startTitle')}</h3><p>${t('startCaption')}</p></div><span class="step-count">1 / 4</span></div>
-    <ol class="steps-list"><li class="is-done"><span class="step-mark">${icon('check', 17)}</span><span><b>${t('stepOne')}</b><small>${t('done')}</small></span></li><li><span class="step-mark">2</span><span><b>${t('stepTwo')}</b><small>${t('upcoming')}</small></span></li><li><span class="step-mark">3</span><span><b>${t('stepThree')}</b><small>${t('upcoming')}</small></span></li><li><span class="step-mark">4</span><span><b>${t('stepFour')}</b><small>${t('upcoming')}</small></span></li></ol>
-    <div class="steps-progress"><span><i></i></span><b>25%</b></div></section></div>
+    ${draftCountOrEmpty()}
+  </section><section class="panel steps-panel"><div class="panel-heading"><div><h3>${t('startTitle')}</h3><p>${t('startCaption')}</p></div><span class="step-count">2 / 4</span></div>
+    <ol class="steps-list"><li class="is-done"><span class="step-mark">${icon('check', 17)}</span><span><b>${t('stepOne')}</b><small>${t('done')}</small></span></li><li class="is-done"><span class="step-mark">${icon('check', 17)}</span><span><b>${t('stepTwo')}</b><small>${t('done')}</small></span></li><li><span class="step-mark">3</span><span><b>${t('stepThree')}</b><small>${t('upcoming')}</small></span></li><li><span class="step-mark">4</span><span><b>${t('stepFour')}</b><small>${t('upcoming')}</small></span></li></ol>
+    <div class="steps-progress"><span><i style="width:50%"></i></span><b>50%</b></div></section></div>
   <section class="patterns-preview"><div class="section-heading"><div><span class="section-icon">${icon('layers', 19)}</span><div><h3>${t('patternsTitle')}</h3><p>${t('patternsCaption')}</p></div></div><button class="text-link" type="button" data-nav="patterns">${t('viewAll')} ${icon('arrow', 16)}</button></div><div class="patterns-row">${patternCards(3)}</div></section>
   <div class="teaching-tip"><span class="tip-icon">${icon('sparkles', 21)}</span><div><strong>${t('tipLabel')}</strong><p>${t('tipText')}</p></div><span class="tip-decoration" aria-hidden="true">✳</span></div>`;
+}
+
+function draftCountOrEmpty() {
+  if (draftStats().drafts) return recentDraftsPage(state.locale);
+  return `<div class="empty-games"><div class="empty-illustration"><div class="empty-card-back"></div><div class="empty-card-front">${icon('gamepad', 37)}<span class="empty-plus">+</span></div><span class="empty-star">✦</span></div><h4>${t('emptyGames')}</h4><p>${t('emptyGamesText')}</p><button class="button button-primary" type="button" data-nav="studio">${t('startCreating')} ${icon('arrow', 17)}</button></div>`;
 }
 
 const sectionIds = {
@@ -261,8 +269,8 @@ function render() {
   document.documentElement.dir = direction;
   document.documentElement.lang = state.locale;
   document.title = `${t(state.page)} | Arabic Light Academy`;
-  const main = state.page === 'dashboard' ? dashboard() : state.page === 'patterns' ? patternsPage() : state.page === 'settings' ? settingsPage() : placeholderPage(state.page);
-  app.innerHTML = `<div class="shell">${sidebar()}<div class="main-area">${topbar()}<main class="content" id="main-content">${main}<footer class="main-footer"><span>${t('footer')}</span><span>${t('product')} · v0.1</span></footer></main></div></div>${state.mobileOpen ? '<button class="mobile-overlay" aria-label="Close navigation" data-action="menu"></button>' : ''}${patternDialog()}<div class="toast" id="toast" role="status" aria-live="polite"></div>`;
+  const main = state.page === 'dashboard' ? dashboard() : state.page === 'studio' ? studioPage(state.locale) : state.page === 'library' ? libraryPage(state.locale) : state.page === 'patterns' ? patternsPage() : state.page === 'settings' ? settingsPage() : placeholderPage(state.page);
+  app.innerHTML = `<div class="shell">${sidebar()}<div class="main-area">${topbar()}<main class="content" id="main-content">${main}<footer class="main-footer"><span>${t('footer')}</span><span>${t('product')} · v0.2</span></footer></main></div></div>${state.mobileOpen ? '<button class="mobile-overlay" aria-label="Close navigation" data-action="menu"></button>' : ''}${patternDialog()}${editorOverlay(state.locale)}<div class="toast" id="toast" role="status" aria-live="polite"></div>`;
   applyPatternFilter();
 }
 
@@ -318,7 +326,7 @@ document.addEventListener('click', event => {
       safeSet('ala-games-locale', state.locale);
       render(); break;
     case 'notifications': state.notificationsOpen = !state.notificationsOpen; render(); break;
-    case 'new-game': navigate('studio'); toast(t('studioPhase')); break;
+    case 'new-game': newDraft(state.locale); navigate('studio'); break;
     case 'close-pattern': state.selectedPattern = null; render(); break;
   }
 });
@@ -353,3 +361,4 @@ window.addEventListener('hashchange', () => {
 });
 
 render();
+registerEditorEvents({ refresh: render, go: navigate, toast, locale: () => state.locale });
