@@ -326,7 +326,7 @@ document.addEventListener('click', event => {
       safeSet('ala-games-locale', state.locale);
       render(); break;
     case 'notifications': state.notificationsOpen = !state.notificationsOpen; render(); break;
-    case 'new-game': newDraft(state.locale); navigate('studio'); break;
+    case 'new-game': if (newDraft(state.locale)) navigate('studio'); else toast(state.locale === 'ar' ? 'تعذر حفظ المسودة الحالية.' : 'Could not save the current draft.'); break;
     case 'close-pattern': state.selectedPattern = null; render(); break;
   }
 });
